@@ -25,14 +25,19 @@ Guide pratique pour activer les règles SQL/RLS du Nexus de Compétences.
 
 Depuis le dossier racine du projet:
 
-1. Installer la CLI (si besoin):
-  - `npm i -g supabase`
+1. Méthode simple (sans installation globale):
+  - `npx supabase --version`
 2. Login:
-  - `supabase login`
+  - `npx supabase login`
 3. Lier le projet:
-  - `supabase link --project-ref pshayqppnofadhzzfrxn`
+  - `npx supabase link --project-ref pshayqppnofadhzzfrxn`
 4. Exécuter le SQL:
-  - `supabase db execute --file "supabase/sql/2026-03-01_pilier-c_announcements_rls.sql" --linked`
+  - `npx supabase db execute --file "supabase/sql/2026-03-01_pilier-c_announcements_rls.sql" --linked`
+
+Alternative (si tu préfères une installation globale):
+
+- `npm i -g supabase`
+- puis les mêmes commandes sans `npx`.
 
 ## Ce que le script applique
 
