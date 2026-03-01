@@ -1,9 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
 
-export default function NotFound() {
-  const redirectUrl = "/";
-  const buttonText = "Accueil";
+export default async function NotFound() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const redirectUrl = user ? "/dashboard" : "/";
+  const buttonText = user ? "Tableau de bord" : "Accueil";
 
   return (
     <div className="bg-[#f6f8f7] antialiased min-h-dvh flex flex-col items-center justify-center p-6 selection:bg-secondary/30 relative">
