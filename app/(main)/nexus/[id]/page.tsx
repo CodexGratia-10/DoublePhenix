@@ -135,7 +135,7 @@ export default function AnnouncementDetailPage() {
   const normalizedPhone = author?.whatsapp?.replace(/\D/g, "") || "";
   const whatsappUrl = normalizedPhone
     ? `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(
-        `Bonjour ${authorFirstName}, je suis intéressé(e) par votre annonce \"${announcement.title}\" sur PHENIX.`
+        `Bonjour ${authorFirstName}, je suis intéressé(e) par votre annonce "${announcement.title}" sur PHENIX.`
       )}`
     : null;
 

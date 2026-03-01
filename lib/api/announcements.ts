@@ -102,28 +102,27 @@ export async function createAnnouncement(payload: {
   contact_whatsapp?: boolean;
   contact_linkedin?: boolean;
 }): Promise<Announcement | null> {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    console.error("[API] Création annonce refusée: utilisateur non authentifié");
+  try {
+    const response = await fetch("/api/announcements", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      console.error("[API] Erreur création annonce:", errorBody?.error || response.statusText);
+      return null;
+    }
+
+    const body = await response.json();
+    return (body?.data as Announcement) || null;
+  } catch (error) {
+    console.error("[API] Erreur création annonce:", error);
     return null;
   }
-
-  const { data, error } = await supabase
-    .from("announcements")
-    .insert({
-      ...payload,
-      user_id: user.id,
-    })
-    .select()
-    .single();
-
-  if (error) {
-    console.error("[API] Erreur création annonce:", error.message);
-    return null;
-  }
-
-  return data as Announcement;
 }
 
 /**
@@ -133,25 +132,20 @@ export async function getMatchingAnnouncements(options?: {
   school?: string | null;
   pageSize?: number;
 }): Promise<Announcement[]> {
-  const supabase = createClient();
-  const { school, pageSize = 4 } = options || {};
+  const { pageSize = 4 } = options || {};
 
-  let query = supabase
-    .from("announcements")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(pageSize);
+  try {
+    const response = await fetch(`/api/announcements/matching?limit=${pageSize}`);
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      console.error("[API] Erreur matching annonces:", errorBody?.error || response.statusText);
+      return [];
+    }
 
-  if (school) {
-    query = query.in("target_school", [school, "All"]);
-  }
-
-  const { data, error } = await query;
-
-  if (error) {
-    console.error("[API] Erreur matching annonces:", error.message);
+    const body = await response.json();
+    return (body?.data as Announcement[]) || [];
+  } catch (error) {
+    console.error("[API] Erreur matching annonces:", error);
     return [];
   }
-
-  return (data as Announcement[]) || [];
 }

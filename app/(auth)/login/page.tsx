@@ -53,7 +53,11 @@ function LoginForm() {
     });
 
     if (error) {
-      toast.error('Email ou mot de passe incorrect.');
+      if (error.message.toLowerCase().includes("email not confirmed")) {
+        toast.error("Email non confirmé. Vérifiez votre boîte mail puis réessayez.");
+      } else {
+        toast.error(error.message || "Email ou mot de passe incorrect.");
+      }
       setLoading(false);
       return;
     }

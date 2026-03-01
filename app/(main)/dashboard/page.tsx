@@ -49,22 +49,18 @@ export default function DashboardPage() {
     async function loadDashboard() {
       setIsLoading(true);
       try {
-        const [profileData, statsData, docsData, activitiesData] = await Promise.all([
+        const [profileData, statsData, docsData, matchedAnnouncements, activitiesData] = await Promise.all([
           getCurrentProfile(),
           getImpactStats(),
           getRecommendedDocuments(4),
+          getMatchingAnnouncements({ pageSize: 4 }),
           getRecentActivities(3),
         ]);
-
-        const matchedAnnouncements = await getMatchingAnnouncements({
-          school: profileData?.school || null,
-          pageSize: 4,
-        });
 
         setProfile(profileData);
         setStats(statsData);
         setDocuments(docsData);
-        setAnnouncements(matchedAnnouncements);
+        setAnnouncements(matchedAnnouncements || []);
         setActivities(activitiesData);
       } catch (err) {
         console.error("[Dashboard] Erreur chargement:", err);

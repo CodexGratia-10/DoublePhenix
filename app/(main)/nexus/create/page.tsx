@@ -86,13 +86,8 @@ export default function CreateAnnouncementPage() {
 
   // ─── Submit to Supabase ───
   const handleSubmit = async () => {
-    if (!title.trim() || !description.trim() || !selectedSchool || !collabType) {
+    if (!title.trim() || !description.trim() || !selectedSchool) {
       toast.error("Veuillez remplir tous les champs obligatoires.");
-      return;
-    }
-
-    if (!contactWhatsapp && !contactLinkedin) {
-      toast.error("Choisissez au moins un moyen de contact (WhatsApp ou LinkedIn).");
       return;
     }
 
@@ -107,7 +102,7 @@ export default function CreateAnnouncementPage() {
         title: title.trim(),
         description: description.trim(),
         target_school: selectedSchool,
-        collab_type: collabType,
+        collab_type: collabType || "projet",
         tags: tagArray,
         contact_whatsapp: contactWhatsapp,
         contact_linkedin: contactLinkedin,
@@ -233,24 +228,6 @@ export default function CreateAnnouncementPage() {
                 {/* School picker dropdown */}
                 {showSchoolPicker && (
                   <div className="rounded-2xl bg-white border border-accent/10 shadow-lg overflow-hidden max-h-[40vh] overflow-y-auto no-scrollbar mt-1 animate-fade-in">
-                    <div className="p-3 border-b border-accent/10">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedSchool("All");
-                          setShowSchoolPicker(false);
-                          setSchoolSearch("");
-                        }}
-                        className={`w-full px-3 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 text-left ${
-                          selectedSchool === "All"
-                            ? "bg-secondary text-white shadow-sm"
-                            : "bg-[#F9F9F7] text-primary border border-accent/10 hover:border-secondary/30"
-                        }`}
-                      >
-                        Toutes les écoles (All)
-                      </button>
-                    </div>
-
                     {/* Search */}
                     <div className="sticky top-0 bg-white/95 backdrop-blur-sm p-3 border-b border-accent/10">
                       <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F1F4F1]">
@@ -316,7 +293,7 @@ export default function CreateAnnouncementPage() {
               {/* Type de Collaboration */}
               <div className="space-y-2 group">
                 <label className="block text-sm font-medium text-accent ml-1 group-focus-within:text-secondary transition-colors font-body">
-                  Type de Collaboration
+                  Type de Collaboration (optionnel)
                 </label>
                 <div className="relative">
                   <select
